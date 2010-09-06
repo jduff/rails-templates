@@ -1,4 +1,4 @@
-# Run with rails APP_NAME -J -d mysql -m
+# Run with rails new APP_NAME -J -d mysql -m http://github.com/jduff/rails-templates/raw/master/all.rb
 
 # Setup .rvmrc file for the project
 rvmrc = <<-RVMRC

@@ -1,0 +1,7 @@
+Usage:
+rails new APP_NAME -J -d mysql -m http://github.com/jduff/rails-templates/raw/master/all.rb
+
+After running the template cd into your new application and run 'bundle install'
+
+Todo:
+Split into separate files
