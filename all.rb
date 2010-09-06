@@ -88,7 +88,7 @@ puts "running bundle install"
 run 'bundle install'
 
 puts "setting up CanCan"
-create_file "", %q(
+create_file "app/models/ability.rb", %q(
 class Ability
   include CanCan::Ability
 
