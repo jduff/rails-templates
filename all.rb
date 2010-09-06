@@ -77,19 +77,29 @@ puts "adding gems"
 gem "responders"
 gem "factory_girl", :group => :test
 
-# Use the mysql2 gem
-#gem "mysql2"
-#gsub_file 'config/database.yml', 'mysql', 'mysql2'
-
 # Use devise for user authentication
 gem "devise", "1.1.2"
 
 gem "will_paginate", :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
-gem "cancan"
+gem "cancan" # authorization
 gem "simple_form"
 
 puts "running bundle install"
 run 'bundle install'
+
+puts "setting up CanCan"
+create_file "", %q(
+class Ability
+  include CanCan::Ability
+
+  def initialize(user)
+    user ||= User.new # in case of guest
+
+    # can :manage, Something, :user_id => user.id
+    can :read, :all
+  end
+end
+)
 
 puts "setting up Factory Girl"
 # Use Factory Girl instead of Fixtures
@@ -244,6 +254,19 @@ inject_into_file 'app/controllers/application_controller.rb', %q(
   respond_to :html, :xml, :json
 
   before_filter :authenticate_user!
+
+  # Use this method in your controllers to load and authorize resources with CanCan
+  # load_and_authorize_resource
+
+  # rescue_from CanCan::AccessDenied do |ex|
+  #   flash[:alert] = ex.message
+  #   redirect_to user_path(@user)
+  # end
+
+  # Example of using the responders - this will render html, xml or json depending on the request
+  # def show
+  #   respond_with @user
+  # end
 ), :after => 'protect_from_forgery'
 
 prepend_file 'app/controllers/application_controller.rb', "require \"application_responder\"\n"
