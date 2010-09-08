@@ -76,6 +76,8 @@ create_file "tmp/.gitkeep"
 puts "adding gems"
 gem "responders"
 gem "factory_girl", :group => :test
+gem "ZenTest", :group => :test
+gem "autotest-rails", :group => :test
 
 # Use devise for user authentication
 gem "devise", "1.1.2"
@@ -103,18 +105,21 @@ end
 
 puts "setting up Factory Girl"
 # Use Factory Girl instead of Fixtures
-inject_into_file 'test/test_helper.rb', "\nrequire 'factory_girl'", :after => "require 'rails/test_help'"
+inject_into_file 'test/test_helper.rb', "\nrequire 'signout_pathfactory_girl'\nrequire 'factories'", :after => "require 'rails/test_help'"
+inject_into_file 'test/test_helper.rb', %q(
+class ActionController::TestCase
+  include Devise::TestHelpers
+end
+), :after => "end"
 gsub_file 'test/test_helper.rb', 'fixtures :all', ''
 
 factories = %q(
 Factory.define :user do |f|
-  f.sequence(:confirmation_token) {|n| "confirm#{n}" }
   f.sequence(:email)      {|n| "user#{n}@example.com" }
   f.sequence(:name)       {|n| "user#{n}" }
   f.sequence(:login)      {|n| "user#{n}" }
   f.password              "password"
   f.password_confirmation "password"
-  f.confirmed_at          Time.now
 end
 )
 
@@ -186,15 +191,6 @@ class UserTest < ActiveSupport::TestCase
     user = User.find_for_authentication(:login=>nil)
 
     assert_nil user
-  end
-
-  test "display name" do
-    @user = Factory(:user, :name=>"John", :email=>"jd@jd.com", :login=>"jd")
-    assert_equal "John", @user.display_name
-    @user.update_attributes!(:name=>"")
-    assert_equal "jd", @user.display_name
-    @user.update_attributes(:login=>nil)
-    assert_equal "jd@jd.com", @user.display_name
   end
 
   test "login must be unique" do
