@@ -15,57 +15,10 @@ end
 
 puts "removing unneeded files..."
 remove_file 'public/index.html'
-remove_file 'public/robots.txt'
 remove_file 'public/images/rails.png'
 remove_file 'README'
 remove_file 'test/fixtures'
 run 'touch README'
-
-# Use JQuery
-get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery.js"
-get "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js", "public/javascripts/jquery-ui.js"
-get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
-# base stylesheet
-get "http://gist.github.com/raw/567195/b1d8c5f8250f63111e80d4dd31eb1eb0f4887217/base.css", "public/stylesheets/base.css"
-run 'touch public/stylesheets/styles.css'
-
-gsub_file 'config/application.rb', 'config.action_view.javascript_expansions[:defaults] = %w()', "config.action_view.javascript_expansions = { :defaults => ['jquery', 'jquery-ui', 'rails'] }"
-
-# HTML5 Layout
-layout = <<-LAYOUT
-<!DOCTYPE html>
-<html>
-<head>
-  <title>#{app_name.humanize}</title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :defaults %>
-  <%= csrf_meta_tag %>
-</head>
-<body class="<%=controller_name%> <%=action_name%>">
-  <ul id='user-links' class='nav'>
-    <% if user_signed_in? %>
-      <li><%= link_to current_user.email, edit_user_registration_path %></li>
-      <li><%= link_to "logout", destroy_user_session_path %></li>
-    <% else %>
-      <li><%= link_to "sign in", new_user_session_path %></li>
-      <li><%= link_to "sign up", new_user_registration_path %></li>
-    <% end %>
-  </ul>
-
-  <% if !alert.blank? %>
-    <p class="alert"><%= alert %></p>
-  <% end %>
-  <% if !notice.blank? %>
-    <p class="notice"><%= notice %></p>
-  <% end %>
-
-  <%= yield %>
-</body>
-</html>
-LAYOUT
-
-remove_file "app/views/layouts/application.html.erb"
-create_file "app/views/layouts/application.html.erb", layout
 
 # so the directories end up in git
 create_file "log/.gitkeep"
@@ -214,6 +167,50 @@ inject_into_file 'config/routes.rb', "\n  root :to => \"home#index\"", :after =>
 
 inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => '', :layout => true", :after => "def index"
 
+
+#----------------------------------------------------------------------------
+# Application Layout based on html5 boilerplate, JQuery etc.
+#----------------------------------------------------------------------------
+
+# Use JQuery
+get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery-1.4.2.min.js"
+get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
+# base stylesheet
+get "http://gist.github.com/raw/567195/7a3cbe7732402df8e0441a2e677deac2a44d7c5f/base.css", "public/stylesheets/base.css"
+run 'touch public/stylesheets/styles.css'
+
+# some of the html5 boilerplate files
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/css/handheld.css', 'public/stylesheets/handheld.css'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/dd_belatedpng.js', 'public/javascripts/dd_belatedpng.js'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/plugins.js', 'public/javascripts/plugins.js'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/modernizr-1.5.min.js', 'public/javascripts/modernizr-1.5.min.js'
+
+remove_file 'public/favicon.ico'
+remove_file 'public/robots.txt'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/favicon.ico', 'public/favicon.ico'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/apple-touch-icon.png', 'public/apple-touch-icon.png'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/robots.txt', 'public/robots.txt'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/crossdomain.xml', 'crossdomain.xml'
+
+# Grab of Railsified version of the index.html
+remove_file 'app/views/layouts/application.html.erb'
+get 'http://github.com/jduff/html5-boilerplate/raw/master/index.html', 'app/views/layouts/application.html.erb'
+
+# include rails.js with javascript defaults
+gsub_file 'config/application.rb', 'config.action_view.javascript_expansions[:defaults] = %w()', "config.action_view.javascript_expansions = { :defaults => ['rails'] }"
+
+# Update the template with the app name and some user links
+inject_into_file 'app/views/layouts/application.html.erb', app_name.humanize, :after => "<title>"
+inject_into_file 'app/views/layouts/application.html.erb', %q(
+  <ul id='user-links' class='nav'>
+    <% if user_signed_in? %>
+      <li><%= link_to current_user.email, edit_user_registration_path %></li>
+      <li><%= link_to "logout", destroy_user_session_path %></li>
+    <% else %>
+      <li><%= link_to "sign in", new_user_session_path %></li>
+      <li><%= link_to "sign up", new_user_registration_path %></li>
+    <% end %>
+  </ul>), :after => "<header>"
 
 # Git it Up
 git :init
