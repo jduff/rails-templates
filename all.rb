@@ -176,7 +176,7 @@ inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => ''
 get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery-1.4.2.min.js"
 get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 # base stylesheet
-get "http://gist.github.com/raw/567195/7a3cbe7732402df8e0441a2e677deac2a44d7c5f/base.css", "public/stylesheets/base.css"
+get "http://gist.github.com/raw/567195/af7887397c9eb3b7146354cb08d96317dc808a15/base.css", "public/stylesheets/base.css"
 run 'touch public/stylesheets/styles.css'
 
 # some of the html5 boilerplate files
