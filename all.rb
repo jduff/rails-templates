@@ -154,7 +154,7 @@ inject_into_file "app/views/devise/sessions/new.html.erb", %q(, :required => fal
 
 puts "adding user seed"
 append_file "db/seeds.rb", %q(
-user = User.new(:email=>"admin@example.com", :login=>'admin', :password=>"admin", :password_confirmation=>"jduff")
+user = User.new(:email=>"admin@example.com", :login=>'admin', :password=>"admin")
 user.save!(:validate => false)
 )
 
