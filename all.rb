@@ -176,7 +176,7 @@ inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => ''
 get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery-1.4.2.min.js"
 get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 # base stylesheet
-get "http://gist.github.com/raw/567195/base.css"
+get "http://gist.github.com/raw/567195/base.css", "public/stylesheets/base.css"
 run 'touch public/stylesheets/styles.css'
 
 # some of the html5 boilerplate files
@@ -190,7 +190,7 @@ remove_file 'public/robots.txt'
 get 'http://github.com/paulirish/html5-boilerplate/raw/master/favicon.ico', 'public/favicon.ico'
 get 'http://github.com/paulirish/html5-boilerplate/raw/master/apple-touch-icon.png', 'public/apple-touch-icon.png'
 get 'http://github.com/paulirish/html5-boilerplate/raw/master/robots.txt', 'public/robots.txt'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/crossdomain.xml', 'crossdomain.xml'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/crossdomain.xml', 'public/crossdomain.xml'
 
 # Grab of Railsified version of the index.html
 remove_file 'app/views/layouts/application.html.erb'
