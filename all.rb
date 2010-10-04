@@ -145,7 +145,7 @@ puts "Use simple form in the devise views"
   gsub_file "app/views/devise/#{file}.html.erb", /\s*<%= f\.label.*$/, ''
 end
 
-inject_into_file "app/views/devise/registrations/edit.html.erb", %q(, :required => false, :hint=>"(leave blank if you don't want to change it)" %>), :after=>":password"
+inject_into_file "app/views/devise/registrations/edit.html.erb", %q(, :required => false, :hint=>"(leave blank if you don't want to change it)"), :after=>":password "
 
 inject_into_file "app/views/devise/registrations/edit.html.erb", %q(, :required => false, :hint=>"(we need your current password to confirm your changes)", :error=>false), :after=>":current_password"
 
