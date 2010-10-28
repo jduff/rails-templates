@@ -42,10 +42,14 @@ gem "will_paginate", :git => "git://github.com/mislav/will_paginate.git", :branc
 gem "cancan" # authorization
 gem "simple_form"
 gem "acts-as-taggable-on"
-gem "backpocket"
+gem "backpocket", :git => "git://github.com/jduff/backpocket.git"
 
 puts "running bundle install"
-run 'bundle install'
+
+inside app_name do
+  run "bundle install"
+end
+
 
 # Use Factory Girl for fixtures
 environment %q(
