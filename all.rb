@@ -134,26 +134,6 @@ puts "Setting up Simple Form"
 generate "simple_form:install"
 gsub_file 'config/initializers/simple_form.rb', '# config.wrapper_tag = :div', 'config.wrapper_tag = :p'
 
-puts "Use simple form in the devise views"
-
-%w(confirmations/new passwords/edit passwords/new registrations/edit registrations/new sessions/new unlocks/new).each do |file|
-  gsub_file "app/views/devise/#{file}.html.erb", 'form_for', 'simple_form_for'
-  gsub_file "app/views/devise/#{file}.html.erb", '<p><%', '<%'
-  gsub_file "app/views/devise/#{file}.html.erb", '%></p>', '%>'
-  gsub_file "app/views/devise/#{file}.html.erb", '<br />', ''
-  gsub_file "app/views/devise/#{file}.html.erb", 'f.password_field', 'f.input'
-  gsub_file "app/views/devise/#{file}.html.erb", 'f.text_field', 'f.input'
-  gsub_file "app/views/devise/#{file}.html.erb", 'f.submit', 'f.button :submit,'
-  gsub_file "app/views/devise/#{file}.html.erb", /\s*<%= f\.label.*$/, ''
-end
-
-inject_into_file "app/views/devise/registrations/edit.html.erb", %q(, :required => false, :hint=>"(leave blank if you don't want to change it)"), :after=>":password "
-
-inject_into_file "app/views/devise/registrations/edit.html.erb", %q(, :required => false, :hint=>"(we need your current password to confirm your changes)", :error=>false), :after=>":current_password"
-
-inject_into_file "app/views/devise/sessions/new.html.erb", %q(, :required => false, :label=>"Login or Email"),
-  :after=>"<%= f.input :email"
-
 puts "adding user seed"
 append_file "db/seeds.rb", %q(
 user = User.new(:email=>"admin@example.com", :login=>'admin', :password=>"admin")
