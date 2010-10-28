@@ -36,11 +36,13 @@ gem "ZenTest", :group => :test
 gem "autotest-rails", :group => :test
 
 # Use devise for user authentication
-gem "devise", "1.1.2"
+gem "devise"
 
 gem "will_paginate", :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
 gem "cancan" # authorization
 gem "simple_form"
+gem "acts-as-taggable-on"
+gem "backpocket"
 
 puts "running bundle install"
 run 'bundle install'
@@ -175,15 +177,16 @@ inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => ''
 # Use JQuery
 get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery-1.4.2.min.js"
 get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
+get "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js",  "public/javascripts/jquery-ui-1.8.5.min.js"
 # base stylesheet
 get "http://gist.github.com/raw/567195/base.css", "public/stylesheets/base.css"
 run 'touch public/stylesheets/styles.css'
 
 # some of the html5 boilerplate files
 get 'http://github.com/paulirish/html5-boilerplate/raw/master/css/handheld.css', 'public/stylesheets/handheld.css'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/dd_belatedpng.js', 'public/javascripts/dd_belatedpng.js'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/libs/dd_belatedpng.js', 'public/javascripts/dd_belatedpng.js'
 get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/plugins.js', 'public/javascripts/plugins.js'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/modernizr-1.5.min.js', 'public/javascripts/modernizr-1.5.min.js'
+get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/libs/modernizr-1.6.min.js', 'public/javascripts/modernizr-1.6.min.js'
 
 remove_file 'public/favicon.ico'
 remove_file 'public/robots.txt'
