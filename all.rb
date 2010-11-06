@@ -95,9 +95,15 @@ inject_into_file 'app/models/user.rb', %q(
   validates_uniqueness_of :login, :allow_nil=>true
   validates_format_of :login, :with => /^[^@\s]*$/i, :message => "You can't have @ or spaces in your login" # Logins cannot have @ symbols or spaces
 
+  # Case insensitive login/email
+  before_validation do
+    self.email = self.email.downcase if self.email
+    self.login = self.login.downcase if self.login
+  end
+
   def self.find_for_database_authentication(conditions)
     value = conditions[authentication_keys.first]
-    where(["login = :value OR email = :value", { :value => value }]).first
+    where(["login = :value OR email = :value", { :value => value.downcase }]).first
   end
 ), :before => "end"
 
