@@ -1,4 +1,4 @@
-# Run with rails new APP_NAME -J -d mysql -m http://github.com/jduff/rails-templates/raw/master/all.rb
+# Run with rails new APP_NAME -J -d mysql -m https://github.com/jduff/rails-templates/raw/master/all.rb
 
 # Setup .rvmrc file for the project
 rvmrc = <<-RVMRC
@@ -166,28 +166,28 @@ inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => ''
 
 # Use JQuery
 get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery-1.4.2.min.js"
-get "http://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
+get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
 get "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js",  "public/javascripts/jquery-ui-1.8.5.min.js"
 # base stylesheet
-get "http://gist.github.com/raw/567195/base.css", "public/stylesheets/base.css"
+get "https://gist.github.com/raw/567195/base.css", "public/stylesheets/base.css"
 run 'touch public/stylesheets/styles.css'
 
 # some of the html5 boilerplate files
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/css/handheld.css', 'public/stylesheets/handheld.css'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/libs/dd_belatedpng.js', 'public/javascripts/dd_belatedpng.js'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/plugins.js', 'public/javascripts/plugins.js'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/js/libs/modernizr-1.6.min.js', 'public/javascripts/modernizr-1.6.min.js'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/css/handheld.css', 'public/stylesheets/handheld.css'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/js/libs/dd_belatedpng.js', 'public/javascripts/dd_belatedpng.js'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/js/plugins.js', 'public/javascripts/plugins.js'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/js/libs/modernizr-1.6.min.js', 'public/javascripts/modernizr-1.6.min.js'
 
 remove_file 'public/favicon.ico'
 remove_file 'public/robots.txt'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/favicon.ico', 'public/favicon.ico'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/apple-touch-icon.png', 'public/apple-touch-icon.png'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/robots.txt', 'public/robots.txt'
-get 'http://github.com/paulirish/html5-boilerplate/raw/master/crossdomain.xml', 'public/crossdomain.xml'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/favicon.ico', 'public/favicon.ico'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/apple-touch-icon.png', 'public/apple-touch-icon.png'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/robots.txt', 'public/robots.txt'
+get 'https://github.com/paulirish/html5-boilerplate/raw/master/crossdomain.xml', 'public/crossdomain.xml'
 
 # Grab of Railsified version of the index.html
 remove_file 'app/views/layouts/application.html.erb'
-get 'http://github.com/jduff/html5-boilerplate/raw/master/index.html', 'app/views/layouts/application.html.erb'
+get 'https://github.com/jduff/html5-boilerplate/raw/master/index.html', 'app/views/layouts/application.html.erb'
 
 # include rails.js with javascript defaults
 gsub_file 'config/application.rb', 'config.action_view.javascript_expansions[:defaults] = %w()', "config.action_view.javascript_expansions = { :defaults => ['rails'] }"
