@@ -165,9 +165,9 @@ inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => ''
 #----------------------------------------------------------------------------
 
 # Use JQuery
-get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",  "public/javascripts/jquery-1.4.2.min.js"
+get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js",  "public/javascripts/jquery-1.4.4.min.js"
 get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
-get "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js",  "public/javascripts/jquery-ui-1.8.5.min.js"
+get "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js",  "public/javascripts/jquery-ui-1.8.6.min.js"
 # base stylesheet
 get "https://gist.github.com/raw/567195/base.css", "public/stylesheets/base.css"
 run 'touch public/stylesheets/styles.css'
