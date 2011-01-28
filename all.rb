@@ -1,210 +1,45 @@
 # Run with rails new APP_NAME -J -d mysql -m https://github.com/jduff/rails-templates/raw/master/all.rb
-
-# Setup .rvmrc file for the project
-rvmrc = <<-RVMRC
-rvm_gemset_create_on_use_flag=1
-rvm gemset use #{app_name}
-RVMRC
-
-create_file ".rvmrc", rvmrc
-
-# Add some more stuff to the git ignore
-append_file '.gitignore' do
-  '.DS_Store'
+def apply_local(template, config={})
+  apply File.join(File.dirname(__FILE__), template), config
 end
 
-puts "removing unneeded files..."
-remove_file 'public/index.html'
-remove_file 'public/images/rails.png'
-remove_file 'README'
-remove_file 'test/fixtures'
-run 'touch README'
+@executed_bricks = []
+@defered_bricks = []
 
-# so the directories end up in git
-create_file "log/.gitkeep"
-create_file "tmp/.gitkeep"
-
-
-
-# The gems we like
-puts "adding gems"
-gem "responders"
-gem "factory_girl", :group => :test
-gem "factory_girl_rails", :group => :test
-gem "rails3-generators" # To get the Factory Girl generator
-gem "ZenTest", :group => :test
-gem "autotest-rails", :group => :test
-
-# Use devise for user authentication
-gem "devise"
-
-gem "will_paginate", :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
-gem "cancan" # authorization
-gem "simple_form"
-gem "acts-as-taggable-on"
-gem "backpocket", :git => "git://github.com/jduff/backpocket.git"
-
-puts "running bundle install"
-
-inside app_name do
-  run "bundle install"
+def defer(*bricks, &block)
+  @defered_bricks << [bricks.flatten, block]
 end
 
+def assemble(*bricks, &block)
+  bricks.flatten.each do |brick|
+    if @executed_bricks.include?(brick)
+      raise "Attempting to invoke Brick multiple times!"
+    else
+      apply_local "#{brick}.rb"
+      @executed_bricks << brick
 
-# Use Factory Girl for fixtures
-environment %q(
-    config.generators do |g|
-      g.test_framework :test_unit, :fixture_replacement=>:factory_girl
+      @defered_bricks.each do |b|
+        b[0] = (b.first - @executed_bricks)
+
+        b[1].call if b.first.empty?
+      end
+
+      @defered_bricks.delete_if{|b| b.first.empty?}
     end
-)
-
-puts "setting up CanCan"
-create_file "app/models/ability.rb",
-%q(class Ability
-  include CanCan::Ability
-
-  def initialize(user)
-    user ||= User.new # in case of guest
-
-    # can :manage, Something, :user_id => user.id
-    can :read, :all
-  end
-end)
-
-puts "Setting up Devise"
-# Generate Devise
-generate 'devise:install'
-generate 'devise User login:string'
-generate 'devise:views'
-
-inject_into_file 'test/test_helper.rb', %q(
-
-class ActionController::TestCase
-  include Devise::TestHelpers
-end), :after => "end"
-
-inject_into_file "test/factories/users.rb", %q(
-  f.sequence(:email)      {|n| "user#{n}@example.com" }
-  f.sequence(:login)      {|n| "user#{n}" }
-  f.password              "password"
-  f.password_confirmation "password"), :after=>":user do |f|"
-
-puts "Add name and login to User model (and allowing login with email or login)"
-inject_into_file 'app/models/user.rb', ", :login", :after => ":remember_me"
-inject_into_file 'app/models/user.rb', %q(
-  validates_uniqueness_of :login, :allow_nil=>true
-  validates_format_of :login, :with => /^[^@\s]*$/i, :message => "You can't have @ or spaces in your login" # Logins cannot have @ symbols or spaces
-
-  # Case insensitive login/email
-  before_validation do
-    self.email = self.email.downcase if self.email
-    self.login = self.login.downcase if self.login
   end
 
-  def self.find_for_database_authentication(conditions)
-    value = conditions[authentication_keys.first]
-    where(["login = :value OR email = :value", { :value => value.downcase }]).first
-  end
-), :before => "end"
+  block.call
+end
 
-# Add login to the devise migration
-gsub_file 'config/initializers/devise.rb', 'please-change-me@config-initializers-devise.com', "admin@#{app_name}.com"
+bricks = %w(rvm cleanup factory_girl devise cancan simple_form layout jquery git gems)
 
-create_file 'lib/application_responder.rb', %q(
-class ApplicationResponder < ActionController::Responder
-  include Responders::FlashResponder
-  include Responders::HttpCacheResponder
-end)
+assemble bricks do
+  puts "Installing base gems"
+  gem "ZenTest", :group => :test
+  gem "autotest-rails", :group => :test
 
-inject_into_file 'app/controllers/application_controller.rb', %q(
-  self.responder = ApplicationResponder
-  respond_to :html, :xml, :json
+  gem "will_paginate", :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
 
-  before_filter :authenticate_user!
-
-  # Use this method in your controllers to load and authorize resources with CanCan
-  # load_and_authorize_resource
-
-  # rescue_from CanCan::AccessDenied do |ex|
-  #   flash[:alert] = ex.message
-  #   redirect_to user_path(@user)
-  # end
-
-  # Example of using the responders - this will render html, xml or json depending on the request
-  # def show
-  #   respond_with @user
-  # end
-), :before => "end"
-
-prepend_file 'app/controllers/application_controller.rb', "require \"application_responder\"\n"
-
-gsub_file 'config/application.rb', '# config.autoload_paths += %W(#{config.root}/extras)', 'config.autoload_paths += %W( #{config.root}/lib )'
-
-puts "Setting up Simple Form"
-generate "simple_form:install"
-gsub_file 'config/initializers/simple_form.rb', '# config.wrapper_tag = :div', 'config.wrapper_tag = :p'
-
-puts "adding user seed"
-append_file "db/seeds.rb", %q(
-user = User.new(:email=>"admin@example.com", :login=>'admin', :password=>"admin")
-user.save!(:validate => false)
-)
-
-#----------------------------------------------------------------------------
-# Create a home page
-#----------------------------------------------------------------------------
-puts "create a home controller and view"
-generate(:controller, "home index")
-inject_into_file 'config/routes.rb', "\n  root :to => \"home#index\"", :after => "devise_for :users"
-
-inject_into_file 'app/controllers/home_controller.rb', "\n    render :text => '', :layout => true", :after => "def index"
-
-
-#----------------------------------------------------------------------------
-# Application Layout based on html5 boilerplate, JQuery etc.
-#----------------------------------------------------------------------------
-
-# Use JQuery
-get "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js",  "public/javascripts/jquery-1.4.4.min.js"
-get "https://github.com/rails/jquery-ujs/raw/master/src/rails.js", "public/javascripts/rails.js"
-get "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js",  "public/javascripts/jquery-ui-1.8.6.min.js"
-# base stylesheet
-get "https://gist.github.com/raw/567195/base.css", "public/stylesheets/base.css"
-run 'touch public/stylesheets/styles.css'
-
-# some of the html5 boilerplate files
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/css/handheld.css', 'public/stylesheets/handheld.css'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/js/libs/dd_belatedpng.js', 'public/javascripts/dd_belatedpng.js'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/js/plugins.js', 'public/javascripts/plugins.js'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/js/libs/modernizr-1.6.min.js', 'public/javascripts/modernizr-1.6.min.js'
-
-remove_file 'public/favicon.ico'
-remove_file 'public/robots.txt'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/favicon.ico', 'public/favicon.ico'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/apple-touch-icon.png', 'public/apple-touch-icon.png'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/robots.txt', 'public/robots.txt'
-get 'https://github.com/paulirish/html5-boilerplate/raw/master/crossdomain.xml', 'public/crossdomain.xml'
-
-# Grab of Railsified version of the index.html
-remove_file 'app/views/layouts/application.html.erb'
-get 'https://github.com/jduff/html5-boilerplate/raw/master/index.html', 'app/views/layouts/application.html.erb'
-
-# include rails.js with javascript defaults
-gsub_file 'config/application.rb', 'config.action_view.javascript_expansions[:defaults] = %w()', "config.action_view.javascript_expansions = { :defaults => ['rails'] }"
-
-# Update the template with the app name and some user links
-inject_into_file 'app/views/layouts/application.html.erb', app_name.humanize, :after => "<title>"
-inject_into_file 'app/views/layouts/application.html.erb', %q(
-  <ul id='user-links' class='nav'>
-    <% if user_signed_in? %>
-      <li><%= link_to current_user.email, edit_user_registration_path %></li>
-      <li><%= link_to "logout", destroy_user_session_path %></li>
-    <% else %>
-      <li><%= link_to "sign in", new_user_session_path %></li>
-      <li><%= link_to "sign up", new_user_registration_path %></li>
-    <% end %>
-  </ul>), :after => "<header>"
-
-# Git it Up
-git :init
-git :add => '.'
+  gem "acts-as-taggable-on"
+  gem "backpocket", :git => "git://github.com/jduff/backpocket.git"
+end
