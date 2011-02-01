@@ -1,0 +1,96 @@
+// Constants
+$ninesixty-columns: 24;
+
+// Import Frameworks
+@import "compass";
+@import "compass/reset";
+@import "960/grid";
+@import "forms";
+
+/*
+ * Styling flash messages in Rails
+ */
+.notice {
+  margin-top: 0px;
+  padding: 5px;
+  border: 1px solid #99cc99;
+  background-color: #e2f9e3;
+  color: #006600;
+}
+
+.alert {
+  @extend .notice;
+  border: 1px solid #cc0000;
+  background-color: #eeaaaa;
+  color: #cc0000;
+}
+/*
+ * End styling flash messages in Rails
+ */
+
+/* Font Reset from YUI http://developer.yahoo.com/yui/fonts
+
+If you want this size in pixels (px)	Declare this percent (%)
+                  10	                        77
+                  11	                        85
+                  12	                        93 (was 93)
+                  13	                        100
+                  14	                        108 (was 107)
+                  15	                        116 (was 114)
+                  16	                        123.1 (was 122)
+                  17	                        131 (was 129)
+                  18	                        138.5 (was 136)
+                  19	                        146.5 (was 144)
+                  20	                        153.9 (was 152)
+                  21	                        161.6 (was 159)
+                  22	                        167
+                  23	                        174
+                  24	                        182
+                  25	                        189
+                  26	                        197
+*/
+
+body{
+  font:13px/1.231 arial,helvetica,clean,sans-serif; /* YUI Font Reset */
+  *font-size:small;     /* YUI Font Reset */
+  *font:x-small;        /* YUI Font Reset */
+  height: 100%;
+  color: #444;         /* color is set to create not too much contrast with the background color */
+  line-height: 1.4;    /* line-height is to ensure that text is legible enough ( enough space between the lines) */
+  font-size: 100%;
+}
+
+select,input,button,textarea,button {
+  font:99% arial,helvetica,clean,sans-serif;
+}
+
+table {
+  font-size:inherit;
+  font:100%;
+  border-spacing: 0;
+}
+
+pre,code,kbd,samp,tt {
+  font-family:monospace;
+  *font-size:108%;
+  line-height:100%;
+}
+
+/* YUI Base css http://developer.yahoo.com/yui/base/ */
+
+h1 {
+	/*18px via YUI Fonts CSS foundation*/
+	font-size:138.5%;
+}
+
+h2 {
+	/*16px via YUI Fonts CSS foundation*/
+	font-size:123.1%;
+}
+
+h3 {
+	/*14px via YUI Fonts CSS foundation*/
+	font-size:108%;
+}
+
+

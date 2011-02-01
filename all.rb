@@ -31,7 +31,7 @@ def assemble(*bricks, &block)
   block.call
 end
 
-bricks = %w(rvm cleanup factory_girl devise cancan simple_form layout jquery git gems)
+bricks = %w(rvm cleanup factory_girl responders devise cancan simple_form layout compass jquery git gems)
 
 assemble bricks do
   puts "Installing base gems"

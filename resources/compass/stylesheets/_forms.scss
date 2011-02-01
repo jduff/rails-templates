@@ -1,0 +1,88 @@
+/*
+ * Default forms Styling
+  */
+
+@mixin rounded-inputs {
+  width: 300px;
+  @include border-radius(5px);
+  border: 2px solid #D2D1CF;
+  color: #555555;
+  outline: 0 none;
+  padding: 5px;
+}
+
+@mixin forms {
+  label {
+    width: 120px;
+    display: inline-block; }
+
+  input, textarea {
+    font-size: 110%; }
+
+  select {
+    font-size: 120%; }
+
+  input {
+    &.bool,
+    &[type="checkbox"] {
+      margin-right: 10px;
+    }
+    &[type="text"],
+    &[type="password"],
+    &[type="file"],
+    &[type="email"] {
+      @include rounded-inputs;
+      &:focus {
+        border: 2px solid #2c2c2c;
+      }
+    }
+  }
+
+  textarea, select {
+    @include rounded-inputs;
+    &:focus {
+      border: 2px solid #2c2c2c;
+    }
+  }
+
+  form .input {
+    label {
+      vertical-align: middle; }
+    &.text label {
+      vertical-align: top; } }
+
+  /*
+   * End default forms Styling
+    */
+
+  /*
+   * Styling errors Rails
+    */
+
+  .field_with_errors {
+    input {
+      &[type="text"],
+      &[type="password"],
+      &[type="file"],
+      &[type="email"] {
+        border: 2px solid #E0A7A7;
+        &:focus {
+          border: 2px solid #B22222;
+        }
+      }
+    }
+    textarea, select {
+      border: 2px solid #E0A7A7;
+    }
+    textarea:focus {
+      border: 2px solid #B22222;
+    }
+    .error {
+      padding-left: 10px;
+    }
+  }
+}
+
+/*
+ * End styling errors in Rails
+  */
