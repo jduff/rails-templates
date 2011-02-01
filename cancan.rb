@@ -13,8 +13,7 @@ create_file "app/models/ability.rb",
   end
 end)
 
-inject_into_file 'app/controllers/application_controller.rb', %q(
-
+inject_into_class "app/controllers/application_controller.rb" %q(
   # Use this method in your controllers to load and authorize resources with CanCan
   # load_and_authorize_resource
 
@@ -22,5 +21,5 @@ inject_into_file 'app/controllers/application_controller.rb', %q(
   #   flash[:alert] = ex.message
   #   redirect_to user_path(@user)
   # end
-), :before => "end"
+)
 

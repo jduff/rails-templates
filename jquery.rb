@@ -12,12 +12,12 @@ gsub_file 'config/application.rb', 'config.action_view.javascript_expansions[:de
 defer "layout" do
   inject_into_file 'app/views/layouts/application.html.erb', %q(
 
-    <!-- Grab Google CDN's jQuery. fall back to local if necessary -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/jquery.js"%3E%3C/script%3E'))</script>
+  <!-- Grab Google CDN's jQuery. fall back to local if necessary -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/jquery.js"%3E%3C/script%3E'))</script>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/jquery-ui.js"%3E%3C/script%3E'))</script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/jquery-ui.js"%3E%3C/script%3E'))</script>
 
   ), :after => "<!-- Start Javascript includes -->"
 end
